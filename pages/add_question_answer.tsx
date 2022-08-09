@@ -1,15 +1,29 @@
 import type { NextPage } from 'next'
 import Head from 'next/head'
 import Image from 'next/image'
+import { useRef } from 'react'
+import { Textarea, Text, Button, Checkbox, CheckboxGroup, Stack, Box } from '@chakra-ui/react'
 import styles from '../styles/Home.module.css'
+import ResizeTextarea from "react-textarea-autosize";
+import {format, formatISO, getMonth, getDate} from 'date-fns'
 
 import bodyParser from "body-parser";
 import util from "util";
+import Link from 'next/link'
 
 const getBody = util.promisify(bodyParser.urlencoded());
 
 
-const Home: NextPage = () => {
+const AddQuestionAnswer: NextPage = (props: any) => {
+
+  const date1 = new Date();
+  const date2 = formatISO(new Date());
+
+  const formattedDate2 = format(date1, 'MMMM dd, yyyy');
+  const formattedDate22 = format(date1, 'h:mm a');
+
+  const questionRef = useRef();
+
   return (
     <div className={styles.container}>
       <Head>
@@ -19,11 +33,42 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        original question
+        <Text fontSize="lg">original question-hit by a driver who then lied</Text>
         <br/>
-        answer<textarea></textarea>
+        {formattedDate2} at {formattedDate22}
         <br/>
-        <button>Submit answer</button>
+        here {JSON.stringify(date2)}
+        <br/>
+        date of question - August 15th, 2022 at 1:00pm
+        <br/>
+        const date = new Date()
+        <br/>
+        const month = getMonth(date) + 1
+        <br/>
+        const date = getDate(date) + 1
+        <br/>
+        const year = getYear(date) + 1
+        <br/>
+        user<Link href="/user_profile">user</Link>
+        <br/>
+        <br/>
+        answer
+        <br/>
+        <Box w="50%">
+          <Textarea
+              minH="unset"
+              overflow="hidden"
+              w="100%"
+              resize="none"
+              ref={questionRef}
+              minRows={1}
+              as={ResizeTextarea}
+              {...props}
+              name="answer"
+            />
+        </Box>
+        <br/>
+        <Button>Submit answer</Button><Button>Cancel</Button>
         
       </main>
 
@@ -43,19 +88,19 @@ const Home: NextPage = () => {
   )
 }
 
-export const getServerSideProps = async ({ req, res }: any) => {
+export const getServerSideProps = async ({ req, res, params }: any) => {
 
   //const router = useRouter(); 
 
   await getBody(req, res);
-  console.log("email" + JSON.stringify(req.body["email"]));
+  console.log("answer" + JSON.stringify(req.body["answer"]));
 
   //router.push("/homepage");
 
   //return {
   //  redirect: {
   //    permanent: false,
-  //    destination: `/homepage`
+  //    destination: `/question/12345`
   //  },
   //};
 
@@ -87,4 +132,4 @@ export const getServerSideProps = async ({ req, res }: any) => {
 };
 
 
-export default Home
+export default AddQuestionAnswer

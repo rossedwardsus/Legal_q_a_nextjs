@@ -6,16 +6,32 @@ import { useRouter } from 'next/router'
 import styles from '../styles/Home.module.css'
 import { useState, forwardRef, useRef } from 'react'
 import ResizeTextarea from "react-textarea-autosize";
-
-import { Input } from '@chakra-ui/react'
-import { Button, ButtonGroup } from '@chakra-ui/react'
-import { Select } from '@chakra-ui/react'
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Button, ButtonGroup, Select, Input } from '@chakra-ui/react'
 
 import bodyParser from "body-parser";
 import util from "util";
 import axios from "axios";
 
+const { MongoClient } = require("mongodb");
+import clientPromise  from '../lib/db';
+
+
 const getBody = util.promisify(bodyParser.urlencoded());
+
+
+
+const FormSchema = z.object({
+  email: z.string().email(),
+  //accept: z.literal(true, {
+  //  invalid_type_error: "You must accept Terms and Conditions.",
+  //}),
+  //tier: z
+  //  .string({ invalid_type_error: "Please select a payment tier." })
+  //  .refine((val) => Tiers.map((tier) => tier.id).includes(val)),
+});
 
 const AutoResizeTextarea = forwardRef<HTMLInputElement, any>((props, ref) => {
   return (
@@ -43,6 +59,9 @@ const AskQuestion: NextPage = (props: any, ref: any) => {
   const questionRef = useRef();
   const questionRef1 = useRef();
   
+  const { register, handleSubmit, watch, formState: { errors } } = useForm({
+    //resolver: zodResolver(FormSchema),
+  });
 
   const handleChange = (event: any) => setValue(event.target.value)
 
@@ -155,6 +174,26 @@ export const getServerSideProps = async ({ req, res }: any) => {
     console.log("question2" + JSON.stringify(req.body["question2"]));
     //date of incident
     console.log("state" + JSON.stringify(req.body["state"]));
+
+    const uri = "mongodb://localhost:27017?retryWrites=true&writeConcern=majority";
+    const client = new MongoClient(uri);
+
+    try {
+      const database = client.db('test_databasex');
+      //const movies = database.collection('test_collection');
+
+      const cp = await clientPromise;
+      const db = await cp.db('test_databasex');
+      const movies_collection = await db.collection("test_collection");
+      // Query for a movie that has the title 'Back to the Future'
+      const insert = { datetime: "", event: "Record of a Shriveled Datum11111from lib" };
+      const inserted_movie = movies_collection.insertOne(insert);
+      console.log(inserted_movie);
+      //return inserted_movie;
+    } finally {
+      // Ensures that the client will close when you finish/error
+      //await client.close();
+    }
 
     //router.push("/homepage");
 

@@ -1,5 +1,5 @@
 import type { NextPage } from 'next'
-import { Textarea } from '@chakra-ui/core'
+import { Textarea, Text } from '@chakra-ui/react'
 import Head from 'next/head'
 import Image from 'next/image'
 import { useRouter } from 'next/router'
@@ -42,13 +42,14 @@ const Question: NextPage = () => {
             <br/>
             message user
             <br/>
-            Categories-car accident
+            Categories-car accident-witness
             <br/>
             Location specific to question-ca/la
             <br/>
+            <br/>
             Question
             <br/>
-            
+            <Text></Text>
             <br/>
             <br/>
             answer count

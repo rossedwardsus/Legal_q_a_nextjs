@@ -26,7 +26,9 @@ function MyApp({ Component, pageProps }: any) {
           </Grid>
         </GridItem>
         <GridItem area={'nav'} bg='tomato'>
-          Welcome to legalq+a
+          Welcome to legalq+a/manage case
+          <br/>
+          <Link href="/manage_legal_case1">manage case notes</Link>
           <br/>
           tags
           <br/>
